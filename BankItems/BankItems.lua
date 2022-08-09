@@ -678,6 +678,8 @@ function BankItems_Frame_OnEvent(self, event, ...)
 		BankItems_Generate_SelfItemCache()
 
 	elseif event == "BANKFRAME_CLOSED" then
+		BankItems_SaveItems()
+		BankItems_Generate_SelfItemCache()
 		isBankOpen = false
 
 	elseif event == "MAIL_SHOW" then
