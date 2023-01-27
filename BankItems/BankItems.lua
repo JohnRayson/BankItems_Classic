@@ -1244,10 +1244,16 @@ function BankItems_SaveItems()
 	local itemLink, bagNum_ID
 	if (isBankOpen) then
 		for num = 1, bankSlots do
-			itemLink = GetContainerItemLink(BANK_CONTAINER, num)
+			itemLink = C_Container.GetContainerItemLink(BANK_CONTAINER, num)
 			if (itemLink) then
 				selfPlayer[num] = selfPlayer[num] or newTable()
-				selfPlayer[num].icon, selfPlayer[num].count = GetContainerItemInfo(BANK_CONTAINER, num)
+				
+				local ci = C_Container.GetContainerItemInfo(BANK_CONTAINER, num)
+				print("Cheese")
+				selfPlayer[num].icon = ci.iconFileID
+				selfPlayer[num].count = ci.stackCount
+				
+				--selfPlayer[num].icon, selfPlayer[num].count = C_Container.GetContainerItemInfo(BANK_CONTAINER, num)
 				selfPlayer[num].link = itemLink
 			else
 				delTable(selfPlayer[num])
@@ -1262,13 +1268,17 @@ function BankItems_SaveItems()
 				local theBag = selfPlayer["Bag"..bagNum]
 				theBag.link = itemLink
 				theBag.icon = GetInventoryItemTexture("player", bagNum_ID)
-				theBag.size = GetContainerNumSlots(bagNum)
+				theBag.size = C_Container.GetContainerNumSlots(bagNum)
 				for bagItem = 1, theBag.size do
-					itemLink = GetContainerItemLink(bagNum, bagItem)
+					itemLink = C_Container.GetContainerItemLink(bagNum, bagItem)
 					if (itemLink) then
 						theBag[bagItem] = theBag[bagItem] or newTable()
 						theBag[bagItem].link = itemLink
-						theBag[bagItem].icon, theBag[bagItem].count = GetContainerItemInfo(bagNum, bagItem)
+						--theBag[bagItem].icon, theBag[bagItem].count = C_Container.GetContainerItemInfo(bagNum, bagItem)
+						
+						local ci = C_Container.GetContainerItemInfo(bagNum, bagItem)
+						theBag[bagItem].icon = ci.iconFileID
+						theBag[bagItem].count = ci.stackCount
 					else
 						delTable(theBag[bagItem])
 						theBag[bagItem] = nil
@@ -1323,15 +1333,15 @@ function BankItems_SaveInvItems(bagID)
 			selfPlayer[bagString] = selfPlayer[bagString] or newTable()
 			selfPlayer[bagString].link = nil
 			selfPlayer[bagString].icon = "Interface\\Buttons\\Button-Backpack-Up"
-			selfPlayer[bagString].size = GetContainerNumSlots(bagNum)
+			selfPlayer[bagString].size = C_Container.GetContainerNumSlots(bagNum) --GetContainerNumSlots(bagNum)
 		else
-			bagNum_ID = ContainerIDToInventoryID(bagNum)
+			bagNum_ID = C_Container.ContainerIDToInventoryID(bagNum)
 			itemLink = GetInventoryItemLink("player", bagNum_ID)
 			if (itemLink) then
 				selfPlayer[bagString] = selfPlayer[bagString] or newTable()
 				selfPlayer[bagString].link = itemLink
 				selfPlayer[bagString].icon = GetInventoryItemTexture("player", bagNum_ID)
-				selfPlayer[bagString].size = GetContainerNumSlots(bagNum)
+				selfPlayer[bagString].size = C_Container.GetContainerNumSlots(bagNum)
 			else
 				delTable(selfPlayer[bagString])
 				selfPlayer[bagString] = nil
@@ -1344,11 +1354,15 @@ function BankItems_SaveInvItems(bagID)
 		local theBag = selfPlayer[bagString]
 		if (theBag) then
 			for bagItem = 1, theBag.size do
-				itemLink = GetContainerItemLink(bagNum, bagItem)
+				itemLink = C_Container.GetContainerItemLink(bagNum, bagItem)
 				if (itemLink) then
 					theBag[bagItem] = theBag[bagItem] or newTable()
 					theBag[bagItem].link = itemLink
-					theBag[bagItem].icon, theBag[bagItem].count = GetContainerItemInfo(bagNum, bagItem)
+					--theBag[bagItem].icon, theBag[bagItem].count = C_Container.GetContainerItemInfo(bagNum, bagItem)
+					
+					local ci = C_Container.GetContainerItemInfo(bagNum, bagItem)
+					theBag[bagItem].icon = ci.iconFileID
+					theBag[bagItem].count = ci.stackCount
 				else
 					delTable(theBag[bagItem])
 					theBag[bagItem] = nil
@@ -1485,7 +1499,7 @@ function BankItems_PopulateFrame()
 	end
 	-- 24 bank slots
 	for i = 1, bankSlots do
-		if ( bankPlayer[i] ) then
+		if ( bankPlayer[i] ) then			
 			ItemButtonAr[i].texture:SetTexture(bankPlayer[i].icon)
 			if (bankPlayer[i].count > 1) then
 				ItemButtonAr[i].count:Show()
