@@ -1249,7 +1249,6 @@ function BankItems_SaveItems()
 				selfPlayer[num] = selfPlayer[num] or newTable()
 				
 				local ci = C_Container.GetContainerItemInfo(BANK_CONTAINER, num)
-				print("Cheese")
 				selfPlayer[num].icon = ci.iconFileID
 				selfPlayer[num].count = ci.stackCount
 				
